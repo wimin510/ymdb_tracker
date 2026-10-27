@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#171923" />
+  <title>追劇讀漫｜個人進度管理</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="brand-icon">▶</span><div><strong>追劇讀漫</strong><small>個人影劇・漫畫進度管理</small></div></div>
+    <div class="top-actions">
+      <button class="ghost" id="loginBtn">Google 登入／同步</button>
+      <button class="ghost hidden" id="logoutBtn">登出</button>
+      <span id="syncStatus" class="sync-status">本機模式</span>
+      <button class="ghost" id="exportBtn">匯出備份</button>
+      <label class="ghost import-label">匯入備份<input type="file" id="importFile" accept=".json,application/json" hidden></label>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <div><p class="eyebrow">YOUR PERSONAL WATCHLIST</p><h1>接著上次的進度，<br><span>繼續追下去。</span></h1><p class="hero-sub">影集、動畫、電影與漫畫，集中管理不漏追。</p></div>
+      <div class="hero-stat"><span id="activeCount">0</span><small>部進行中的作品</small></div>
+    </section>
+    <section class="summary" id="summaryCards"></section>
+    <section class="toolbar">
+      <div class="tabs" role="tablist">
+        <button class="tab active" data-kind="all">全部作品</button>
+        <button class="tab" data-kind="screen">影劇</button>
+        <button class="tab" data-kind="comic">漫畫</button>
+      </div>
+      <button class="primary" id="addBtn">＋ 新增作品</button>
+    </section>
+    <section class="filters">
+      <input id="searchInput" type="search" placeholder="搜尋作品名稱…" aria-label="搜尋作品名稱">
+      <select id="statusFilter" aria-label="依狀態篩選">
+        <option value="all">所有狀態</option><option value="想看">待觀看／待閱讀</option>
+        <option value="進行中">觀看中／閱讀中</option><option value="暫停">暫停</option>
+        <option value="已完結">已完結</option><option value="棄追">棄追</option>
+      </select>
+      <select id="sortFilter" aria-label="排序">
+        <option value="updated">最近更新</option><option value="name">作品名稱</option><option value="progress">進度高到低</option><option value="started">開始日期</option>
+      </select>
+    </section>
+    <section id="workGrid" class="work-grid"></section>
+    <section id="emptyState" class="empty hidden"><div class="empty-icon">＋</div><h2>清單還是空的</h2><p>新增第一部正在追的影劇或漫畫吧。</p><button class="primary" id="emptyAddBtn">新增第一部作品</button></section>
+    <p class="storage-note" id="storageNote">目前資料儲存在這個瀏覽器。登入 Google 後可同步到 Firebase；請定期匯出備份。</p>
+  </main>
+
+  <dialog id="workDialog">
+    <form id="workForm" method="dialog">
+      <div class="dialog-head"><div><p class="eyebrow">YOUR LIBRARY</p><h2 id="dialogTitle">新增作品</h2></div><button type="button" class="close" id="closeDialog" aria-label="關閉">×</button></div>
+      <input type="hidden" id="workId">
+      <div class="form-grid">
+        <label class="wide">作品名稱 *<input id="title" required maxlength="120" placeholder="請手動輸入作品名稱"></label>
+        <label>分類<select id="kind"><option value="screen">影劇</option><option value="comic">漫畫</option></select></label>
+        <label>觀看／閱讀平台<select id="platform"></select></label>
+        <label>作品類型<select id="genre"><option>動畫</option><option>日劇</option><option>韓劇</option><option>歐美影集</option><option>台劇</option><option>電影</option><option>綜藝</option><option>漫畫</option><option>其他</option></select></label>
+        <label>進度單位<select id="unit"><option value="集">集</option><option value="話">話</option><option value="卷">卷</option><option value="冊">冊</option><option value="部">部</option></select></label>
+        <label>總數<input id="total" type="number" min="0" step="1" placeholder="未知可留白"></label>
+        <label>目前進度<input id="current" type="number" min="0" step="1" value="0"></label>
+        <label>開始日期<input id="started" type="date"></label>
+        <label>狀態<select id="status"><option value="想看">待觀看／待閱讀</option><option value="進行中">觀看中／閱讀中</option><option value="暫停">暫停</option><option value="已完結">已完結</option><option value="棄追">棄追</option></select></label>
+        <label class="wide">備註<textarea id="notes" rows="3" maxlength="1000" placeholder="例如：看到第 8 集，下一次從第 9 集開始"></textarea></label>
+      </div>
+      <p id="formError" class="form-error" role="alert"></p>
+      <div class="dialog-actions"><button type="button" class="ghost" id="cancelBtn">取消</button><button type="submit" class="primary">儲存作品</button></div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" role="status"></div>
+  <script src="firebase-config.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

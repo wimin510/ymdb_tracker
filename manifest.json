@@ -1,0 +1,11 @@
+{
+  "name": "追劇讀漫｜個人進度管理",
+  "short_name": "追劇讀漫",
+  "description": "個人影劇與漫畫進度管理器",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#101116",
+  "theme_color": "#171923",
+  "lang": "zh-TW",
+  "icons": []
+}
