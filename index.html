@@ -129,6 +129,16 @@
           <button class="filter-cat-btn px-2.5 py-1 rounded-md text-zinc-400 hover:text-white" data-cat="manga">漫畫/書籍</button>
         </div>
 
+        <!-- Drama Sub-Category Filter -->
+        <select id="subTypeFilter" class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500">
+          <option value="all">所有劇種/類型</option>
+          <option value="jp_drama">日劇</option>
+          <option value="us_drama">美劇</option>
+          <option value="tw_drama">台劇</option>
+          <option value="anime">動畫</option>
+          <option value="other_drama">其它劇集/電影</option>
+        </select>
+
         <!-- Status Filter -->
         <select id="statusFilter" class="bg-zinc-800 border border-zinc-700 text-xs text-zinc-200 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-sky-500">
           <option value="all">所有狀態</option>
@@ -215,29 +225,51 @@
         <div class="grid grid-cols-2 gap-3">
           <!-- Category -->
           <div>
-            <label class="block text-zinc-400 font-medium mb-1">分類</label>
+            <label class="block text-zinc-400 font-medium mb-1">主分類</label>
             <select id="inputCategory" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-sky-500">
               <option value="video">影劇 / 動畫</option>
-              <option value="manga">漫畫 / 實體小說</option>
+              <option value="manga">漫畫 / 實體書籍</option>
             </select>
           </div>
 
-          <!-- Platform -->
-          <div>
-            <label class="block text-zinc-400 font-medium mb-1">所屬平台/載體</label>
-            <select id="inputPlatform" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-sky-500">
-              <option value="Netflix">Netflix</option>
-              <option value="Prime Video">Prime Video</option>
-              <option value="Catchplay+">Catchplay+</option>
-              <option value="MyVideo">MyVideo</option>
-              <option value="LINE TV">LINE TV</option>
-              <option value="Disney+">Disney+</option>
-              <option value="巴哈姆特動畫瘋">巴哈姆特動畫瘋</option>
-              <option value="讀墨">讀墨 (Readmoo)</option>
-              <option value="實體書">實體書</option>
-              <option value="其他">其他</option>
+          <!-- Drama Sub-Type (Dynamic visibility) -->
+          <div id="subTypeContainer">
+            <label class="block text-zinc-400 font-medium mb-1">戲劇/影視細分</label>
+            <select id="inputSubType" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-sky-500">
+              <option value="jp_drama">日劇</option>
+              <option value="us_drama">美劇</option>
+              <option value="tw_drama">台劇</option>
+              <option value="anime">動畫</option>
+              <option value="other_drama">其它</option>
             </select>
           </div>
+
+          <!-- Manga Format (shown when manga is selected) -->
+          <div id="mangaTypeContainer" class="hidden">
+            <label class="block text-zinc-400 font-medium mb-1">書籍形式</label>
+            <select id="inputMangaType" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-sky-500">
+              <option value="comic">連載漫畫 / 單行本</option>
+              <option value="novel">輕小說 / 實體書</option>
+              <option value="other_book">其它出版物</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Platform Selection -->
+        <div>
+          <label class="block text-zinc-400 font-medium mb-1">所屬平台 / 載體</label>
+          <select id="inputPlatform" class="w-full bg-zinc-800 border border-zinc-700 rounded-lg px-3 py-2 text-zinc-100 focus:outline-none focus:border-sky-500">
+            <option value="Netflix">Netflix</option>
+            <option value="Prime Video">Prime Video</option>
+            <option value="Catchplay+">Catchplay+</option>
+            <option value="MyVideo">MyVideo</option>
+            <option value="LINE TV">LINE TV</option>
+            <option value="Disney+">Disney+</option>
+            <option value="巴哈姆特動畫瘋">巴哈姆特動畫瘋</option>
+            <option value="讀墨">讀墨 (Readmoo)</option>
+            <option value="實體書">實體書</option>
+            <option value="其他">其他</option>
+          </select>
         </div>
 
         <!-- Progress Numbers -->
@@ -394,12 +426,22 @@
       '其他': { bg: 'bg-zinc-800', text: 'text-zinc-300', border: 'border-zinc-700' }
     };
 
+    // Sub-Category Badges and Label Config
+    const subTypeConfig = {
+      'jp_drama': { label: '日劇', bg: 'bg-rose-950/60', text: 'text-rose-300', border: 'border-rose-800/50' },
+      'us_drama': { label: '美劇', bg: 'bg-indigo-950/60', text: 'text-indigo-300', border: 'border-indigo-800/50' },
+      'tw_drama': { label: '台劇', bg: 'bg-emerald-950/60', text: 'text-emerald-300', border: 'border-emerald-800/50' },
+      'anime': { label: '動畫', bg: 'bg-cyan-950/60', text: 'text-cyan-300', border: 'border-cyan-800/50' },
+      'other_drama': { label: '其它劇', bg: 'bg-zinc-800/80', text: 'text-zinc-400', border: 'border-zinc-700/60' }
+    };
+
     // Default Seed Data for Initial Run
     const defaultData = [
       {
         id: 'sample-1',
         title: '葬送的芙莉蓮 第二季',
         category: 'video',
+        subType: 'anime',
         platform: '巴哈姆特動畫瘋',
         currentEp: 4,
         totalEp: 12,
@@ -410,8 +452,22 @@
       },
       {
         id: 'sample-2',
+        title: 'First Love 初戀',
+        category: 'video',
+        subType: 'jp_drama',
+        platform: 'Netflix',
+        currentEp: 6,
+        totalEp: 9,
+        epState: 'watching',
+        status: 'watching',
+        notes: '日劇必看，音樂氛圍滿分',
+        updatedAt: Date.now() - 1800000
+      },
+      {
+        id: 'sample-3',
         title: '怪奇物語 第五季',
         category: 'video',
+        subType: 'us_drama',
         platform: 'Netflix',
         currentEp: 2,
         totalEp: 8,
@@ -421,9 +477,23 @@
         updatedAt: Date.now() - 3600000
       },
       {
-        id: 'sample-3',
+        id: 'sample-4',
+        title: '不夠善良的我們',
+        category: 'video',
+        subType: 'tw_drama',
+        platform: 'MyVideo',
+        currentEp: 8,
+        totalEp: 8,
+        epState: 'finished',
+        status: 'completed',
+        notes: '全劇完結，劇本與演技精湛',
+        updatedAt: Date.now() - 7200000
+      },
+      {
+        id: 'sample-5',
         title: '驀然回首 (Look Back)',
         category: 'manga',
+        subType: 'comic',
         platform: '讀墨',
         currentEp: 1,
         totalEp: 1,
@@ -433,9 +503,10 @@
         updatedAt: Date.now() - 86400000
       },
       {
-        id: 'sample-4',
+        id: 'sample-6',
         title: '迷宮飯',
         category: 'manga',
+        subType: 'comic',
         platform: '實體書',
         currentEp: 14,
         totalEp: 14,
@@ -632,6 +703,14 @@
       document.getElementById('editItemId').value = item.id;
       document.getElementById('inputTitle').value = item.title;
       document.getElementById('inputCategory').value = item.category || 'video';
+      
+      toggleCategoryInputs(item.category || 'video');
+      if (item.category === 'manga') {
+        document.getElementById('inputMangaType').value = item.subType || 'comic';
+      } else {
+        document.getElementById('inputSubType').value = item.subType || 'jp_drama';
+      }
+
       document.getElementById('inputPlatform').value = item.platform || 'Netflix';
       document.getElementById('inputCurrentEp').value = item.currentEp || 0;
       document.getElementById('inputTotalEp').value = item.totalEp || '';
@@ -642,6 +721,18 @@
       document.getElementById('modalTitle').innerHTML = '<i class="ph ph-pencil-simple-line text-sky-400"></i><span>編輯追蹤項目</span>';
       openModal();
     };
+
+    function toggleCategoryInputs(category) {
+      const subTypeContainer = document.getElementById('subTypeContainer');
+      const mangaTypeContainer = document.getElementById('mangaTypeContainer');
+      if (category === 'manga') {
+        subTypeContainer.classList.add('hidden');
+        mangaTypeContainer.classList.remove('hidden');
+      } else {
+        subTypeContainer.classList.remove('hidden');
+        mangaTypeContainer.classList.add('hidden');
+      }
+    }
 
     // Confirm Delete Dialog
     window.openDeleteDialog = (id) => {
@@ -674,11 +765,14 @@
       const searchVal = document.getElementById('searchInput').value.trim().toLowerCase();
       const statusFilter = document.getElementById('statusFilter').value;
       const platformFilter = document.getElementById('platformFilter').value;
+      const subTypeFilter = document.getElementById('subTypeFilter').value;
 
       // Filtering logic
       const filtered = items.filter(item => {
         // Category filter
         if (activeCategoryFilter !== 'all' && item.category !== activeCategoryFilter) return false;
+        // Sub-Type filter (日劇/美劇/台劇/動畫/其它)
+        if (subTypeFilter !== 'all' && item.subType !== subTypeFilter) return false;
         // Status filter
         if (statusFilter !== 'all' && item.status !== statusFilter) return false;
         // Platform filter
@@ -707,6 +801,15 @@
         const unit = isManga ? '話/卷' : '集';
         const total = parseInt(item.totalEp, 10) || 0;
         const current = parseInt(item.currentEp, 10) || 0;
+
+        // SubType Badge for drama
+        let subBadge = '';
+        if (!isManga && item.subType && subTypeConfig[item.subType]) {
+          const subInfo = subTypeConfig[item.subType];
+          subBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-medium ${subInfo.bg} ${subInfo.text} ${subInfo.border}">${subInfo.label}</span>`;
+        } else if (isManga) {
+          subBadge = `<span class="inline-flex items-center px-1.5 py-0.5 rounded border text-[10px] font-medium bg-purple-950/50 text-purple-300 border-purple-800/40">漫畫/書籍</span>`;
+        }
 
         // Calculate progress percentage
         let percentage = 0;
@@ -747,10 +850,7 @@
                 <span class="inline-flex items-center px-2 py-0.5 rounded border text-[11px] font-medium ${platInfo.bg} ${platInfo.text} ${platInfo.border}">
                   ${item.platform}
                 </span>
-                <span class="text-[10px] text-zinc-500 flex items-center gap-1">
-                  <i class="ph ${isManga ? 'ph-book-bookmark' : 'ph-monitor'}"></i>
-                  ${isManga ? '漫畫/小說' : '影視/動畫'}
-                </span>
+                <div>${subBadge}</div>
               </div>
             </td>
 
@@ -860,7 +960,13 @@
         });
       });
 
+      // Category input change listener in modal
+      document.getElementById('inputCategory').addEventListener('change', (e) => {
+        toggleCategoryInputs(e.target.value);
+      });
+
       // Filter Inputs
+      document.getElementById('subTypeFilter').addEventListener('change', render);
       document.getElementById('statusFilter').addEventListener('change', render);
       document.getElementById('platformFilter').addEventListener('change', render);
       document.getElementById('searchInput').addEventListener('input', render);
@@ -869,6 +975,7 @@
       document.getElementById('btnOpenAddModal').addEventListener('click', () => {
         document.getElementById('itemForm').reset();
         document.getElementById('editItemId').value = '';
+        toggleCategoryInputs('video');
         document.getElementById('modalTitle').innerHTML = '<i class="ph ph-plus-circle text-sky-400"></i><span>新增追蹤項目</span>';
         openModal();
       });
@@ -882,6 +989,9 @@
         const id = document.getElementById('editItemId').value || 'item-' + Date.now();
         const title = document.getElementById('inputTitle').value.trim();
         const category = document.getElementById('inputCategory').value;
+        const subType = category === 'manga' 
+          ? document.getElementById('inputMangaType').value 
+          : document.getElementById('inputSubType').value;
         const platform = document.getElementById('inputPlatform').value;
         const currentEp = parseInt(document.getElementById('inputCurrentEp').value, 10) || 0;
         const totalEpVal = document.getElementById('inputTotalEp').value;
@@ -894,6 +1004,7 @@
           id,
           title,
           category,
+          subType,
           platform,
           currentEp,
           totalEp,
