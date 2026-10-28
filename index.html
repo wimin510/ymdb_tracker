@@ -3,11 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>進度追蹤庫 - Media Tracker</title>
+  <title>進度追蹤庫 - YMDB Tracker</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    /* 密集橫列表格專用樣式 */
     .custom-scrollbar::-webkit-scrollbar { height: 6px; width: 6px; }
     .custom-scrollbar::-webkit-scrollbar-track { background: #1e293b; }
     .custom-scrollbar::-webkit-scrollbar-thumb { background: #475569; border-radius: 3px; }
@@ -16,28 +15,28 @@
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col font-sans">
 
-  <!-- 頂部導航 -->
+  <!-- 頂部導航列 -->
   <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-30">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
       <div class="flex items-center space-x-3">
-        <i class="fa-solid fa-layer-group text-sky-400 text-xl"></i>
-        <h1 class="text-lg font-bold tracking-wide">個人追蹤庫</h1>
-        <span id="sync-status" class="text-xs px-2 py-0.5 rounded-full bg-slate-800 text-slate-400 border border-slate-700">離線模式</span>
+        <i class="fa-solid fa-layer-group text-sky-400 text-2xl"></i>
+        <h1 class="text-xl font-bold tracking-wide">個人追蹤庫</h1>
+        <span id="sync-status" class="text-xs px-2.5 py-1 rounded-full bg-slate-800 text-slate-400 border border-slate-700">離線模式</span>
       </div>
 
-      <!-- 使用者與 Firebase 設定區 -->
-      <div class="flex items-center space-x-2">
-        <button id="btn-config" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 px-3 py-1.5 rounded border border-slate-700 transition" title="Firebase 專案設定">
-          <i class="fa-solid fa-gear mr-1"></i>設定
+      <!-- 設定與 Google 登入按鈕 -->
+      <div class="flex items-center space-x-3">
+        <button id="btn-config" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 px-3 py-2 rounded-lg border border-slate-700 transition" title="Firebase 專案設定">
+          <i class="fa-solid fa-gear mr-1.5"></i>設定
         </button>
         <div id="auth-container">
-          <button id="btn-login" class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-medium px-3 py-1.5 rounded transition flex items-center shadow-sm">
-            <i class="fa-brands fa-google mr-1.5"></i>Google 登入
+          <button id="btn-login" class="text-xs bg-sky-600 hover:bg-sky-500 text-white font-semibold px-3.5 py-2 rounded-lg transition flex items-center shadow">
+            <i class="fa-brands fa-google mr-2"></i>Google 登入
           </button>
           <div id="user-profile" class="hidden flex items-center space-x-2">
-            <img id="user-avatar" class="w-7 h-7 rounded-full border border-slate-700" alt="Avatar">
-            <span id="user-name" class="text-xs font-medium text-slate-200 hidden sm:inline-block max-w-[100px] truncate"></span>
-            <button id="btn-logout" class="text-xs bg-slate-800 hover:bg-red-950 hover:text-red-400 text-slate-400 px-2 py-1.5 rounded border border-slate-700 transition" title="登出">
+            <img id="user-avatar" class="w-8 h-8 rounded-full border border-slate-700" alt="Avatar">
+            <span id="user-name" class="text-xs font-semibold text-slate-200 hidden sm:inline-block max-w-[110px] truncate"></span>
+            <button id="btn-logout" class="text-xs bg-slate-800 hover:bg-rose-950 hover:text-rose-400 text-slate-400 p-2 rounded-lg border border-slate-700 transition" title="登出">
               <i class="fa-solid fa-arrow-right-from-bracket"></i>
             </button>
           </div>
@@ -49,18 +48,16 @@
   <!-- 主操作區 -->
   <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-4">
     
-    <!-- 工具列：篩選與新增按鈕 -->
-    <div class="bg-slate-900 border border-slate-800 rounded-lg p-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
-      <div class="flex flex-wrap items-center gap-2">
-        <!-- 主分類篩選 -->
-        <select id="filter-type" class="bg-slate-800 text-slate-200 text-xs px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-500">
+    <!-- 篩選工具列 -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 sm:p-4 flex flex-wrap items-center justify-between gap-3 shadow">
+      <div class="flex flex-wrap items-center gap-2.5">
+        <select id="filter-type" class="bg-slate-800 text-slate-200 text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500">
           <option value="ALL">全部載體 (影劇 / 漫畫)</option>
           <option value="VIDEO">影劇 / 動畫</option>
           <option value="BOOK">漫畫 / 書籍</option>
         </select>
 
-        <!-- 劇種細分篩選 -->
-        <select id="filter-genre" class="bg-slate-800 text-slate-200 text-xs px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-500">
+        <select id="filter-genre" class="bg-slate-800 text-slate-200 text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500">
           <option value="ALL">全部劇種 / 類型</option>
           <option value="日劇">日劇</option>
           <option value="美劇">美劇</option>
@@ -71,8 +68,7 @@
           <option value="書籍">書籍</option>
         </select>
 
-        <!-- 平台篩選 -->
-        <select id="filter-platform" class="bg-slate-800 text-slate-200 text-xs px-2.5 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-500">
+        <select id="filter-platform" class="bg-slate-800 text-slate-200 text-sm px-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500">
           <option value="ALL">全部平台</option>
           <option value="Netflix">Netflix</option>
           <option value="Prime Video">Prime Video</option>
@@ -86,31 +82,30 @@
           <option value="其它平台">其它平台</option>
         </select>
 
-        <!-- 搜尋框 -->
         <div class="relative">
-          <input type="text" id="search-input" placeholder="搜尋名稱..." class="bg-slate-800 text-slate-200 text-xs pl-7 pr-3 py-1.5 rounded border border-slate-700 focus:outline-none focus:border-sky-500 w-36 sm:w-48">
-          <i class="fa-solid fa-magnifying-glass absolute left-2.5 top-2 text-slate-500 text-xs"></i>
+          <input type="text" id="search-input" placeholder="搜尋作品名稱..." class="bg-slate-800 text-slate-200 text-sm pl-8 pr-3 py-2 rounded-lg border border-slate-700 focus:outline-none focus:border-sky-500 w-44 sm:w-56">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-500 text-sm"></i>
         </div>
       </div>
 
-      <button id="btn-add-item" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold px-3 py-1.5 rounded shadow flex items-center transition ml-auto">
-        <i class="fa-solid fa-plus mr-1"></i>新增紀錄
+      <button id="btn-add-item" class="bg-sky-600 hover:bg-sky-500 text-white text-sm font-semibold px-4 py-2 rounded-lg shadow flex items-center transition ml-auto">
+        <i class="fa-solid fa-plus mr-1.5"></i>新增紀錄
       </button>
     </div>
 
-    <!-- 密集橫列數據表格容器 -->
-    <div class="bg-slate-900 border border-slate-800 rounded-lg overflow-hidden shadow-sm flex flex-col flex-1">
+    <!-- 橫列表格區 -->
+    <div class="bg-slate-900 border border-slate-800 rounded-xl overflow-hidden shadow flex flex-col flex-1">
       <div class="overflow-x-auto custom-scrollbar flex-1">
-        <table class="w-full text-left border-collapse text-xs whitespace-nowrap min-w-[760px]">
+        <table class="w-full text-left border-collapse text-sm whitespace-nowrap min-w-[860px]">
           <thead>
-            <tr class="bg-slate-800/80 border-b border-slate-700/80 text-slate-400 font-medium">
-              <th class="py-2.5 px-3 w-16">分類</th>
-              <th class="py-2.5 px-3 w-28">平台</th>
-              <th class="py-2.5 px-3 min-w-[180px]">作品名稱</th>
-              <th class="py-2.5 px-3 w-48">進度狀態與比例</th>
-              <th class="py-2.5 px-3 w-32 text-center">單集進度</th>
-              <th class="py-2.5 px-3 w-36 text-center">快捷調整</th>
-              <th class="py-2.5 px-3 w-24 text-right">操作</th>
+            <tr class="bg-slate-800/80 border-b border-slate-700/80 text-slate-300 font-semibold text-xs tracking-wider">
+              <th class="py-3 px-4 w-24">分類</th>
+              <th class="py-3 px-4 w-32">平台</th>
+              <th class="py-3 px-4 min-w-[200px]">作品名稱</th>
+              <th class="py-3 px-4 w-60">進度狀態與比例</th>
+              <th class="py-3 px-4 w-36 text-center">單集進度</th>
+              <th class="py-3 px-4 w-44 text-center">快捷調整</th>
+              <th class="py-3 px-4 w-24 text-right">操作</th>
             </tr>
           </thead>
           <tbody id="tracker-table-body" class="divide-y divide-slate-800">
@@ -119,40 +114,39 @@
         </table>
       </div>
 
-      <!-- 空白狀態提示 -->
       <div id="empty-state" class="hidden flex-col items-center justify-center p-12 text-slate-500">
-        <i class="fa-solid fa-inbox text-3xl mb-2"></i>
-        <p class="text-sm">目前無任何追蹤項目</p>
+        <i class="fa-solid fa-inbox text-4xl mb-3"></i>
+        <p class="text-base font-medium">目前無任何追蹤項目</p>
       </div>
     </div>
   </main>
 
-  <!-- 編輯／新增彈窗 (Modal) -->
+  <!-- 新增／編輯彈窗 (Modal) -->
   <div id="item-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-lg w-full max-w-md overflow-hidden shadow-xl">
-      <div class="px-4 py-3 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 id="modal-title" class="text-sm font-semibold text-slate-200">新增紀錄</h3>
-        <button id="modal-close-btn" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark"></i></button>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-md overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/60">
+        <h3 id="modal-title" class="text-base font-bold text-slate-100">新增紀錄</h3>
+        <button id="modal-close-btn" class="text-slate-400 hover:text-slate-200 text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <form id="item-form" class="p-4 space-y-3">
+      <form id="item-form" class="p-5 space-y-4">
         <input type="hidden" id="form-item-id">
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">作品名稱</label>
-          <input type="text" id="form-title" required class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">作品名稱</label>
+          <input type="text" id="form-title" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
         </div>
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">主分類</label>
-            <select id="form-type" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">主分類</label>
+            <select id="form-type" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
               <option value="VIDEO">影劇 / 動畫</option>
               <option value="BOOK">漫畫 / 書籍</option>
             </select>
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">細分類</label>
-            <select id="form-genre" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">細分類</label>
+            <select id="form-genre" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
               <option value="日劇">日劇</option>
               <option value="美劇">美劇</option>
               <option value="台劇">台劇</option>
@@ -163,8 +157,8 @@
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">平台 / 載體</label>
-          <select id="form-platform" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">平台 / 載體</label>
+          <select id="form-platform" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
             <option value="Netflix">Netflix</option>
             <option value="Prime Video">Prime Video</option>
             <option value="CatchPlay+">CatchPlay+</option>
@@ -180,30 +174,30 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">當前進度 (集/話/卷)</label>
-            <input type="number" id="form-current" min="0" value="0" required class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">當前進度 (集/話/卷)</label>
+            <input type="number" id="form-current" min="0" value="0" required class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
           </div>
           <div>
-            <label class="block text-xs font-medium text-slate-400 mb-1">總集數 (0 代表未完結/未知)</label>
-            <input type="number" id="form-total" min="0" value="0" class="w-full bg-slate-800 border border-slate-700 rounded px-2.5 py-1.5 text-xs text-slate-100 focus:outline-none focus:border-sky-500">
+            <label class="block text-xs font-semibold text-slate-300 mb-1.5">總集數 (0 代表未完結/未知)</label>
+            <input type="number" id="form-total" min="0" value="0" class="w-full bg-slate-800 border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-100 focus:outline-none focus:border-sky-500">
           </div>
         </div>
 
         <div>
-          <label class="block text-xs font-medium text-slate-400 mb-1">當前單集狀態</label>
-          <div class="flex items-center space-x-4 pt-1">
-            <label class="inline-flex items-center text-xs text-slate-300">
-              <input type="radio" name="form-status" value="IN_PROGRESS" checked class="text-sky-600 focus:ring-0 mr-1.5">進行中
+          <label class="block text-xs font-semibold text-slate-300 mb-1.5">當前單集狀態</label>
+          <div class="flex items-center space-x-6 pt-1">
+            <label class="inline-flex items-center text-sm text-slate-200 cursor-pointer">
+              <input type="radio" name="form-status" value="IN_PROGRESS" checked class="text-sky-600 focus:ring-0 mr-2">進行中
             </label>
-            <label class="inline-flex items-center text-xs text-slate-300">
-              <input type="radio" name="form-status" value="COMPLETED" class="text-sky-600 focus:ring-0 mr-1.5">該集已完看
+            <label class="inline-flex items-center text-sm text-slate-200 cursor-pointer">
+              <input type="radio" name="form-status" value="COMPLETED" class="text-sky-600 focus:ring-0 mr-2">該集已完看
             </label>
           </div>
         </div>
 
-        <div class="pt-2 flex justify-end space-x-2 border-t border-slate-800">
-          <button type="button" id="modal-cancel-btn" class="px-3 py-1.5 text-xs text-slate-400 hover:text-slate-200">取消</button>
-          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded text-xs font-medium">儲存</button>
+        <div class="pt-3 flex justify-end space-x-3 border-t border-slate-800">
+          <button type="button" id="modal-cancel-btn" class="px-4 py-2 text-sm text-slate-400 hover:text-slate-200">取消</button>
+          <button type="submit" class="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-lg text-sm font-semibold">儲存</button>
         </div>
       </form>
     </div>
@@ -211,14 +205,14 @@
 
   <!-- Firebase 設定彈窗 (Modal) -->
   <div id="config-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center hidden p-4">
-    <div class="bg-slate-900 border border-slate-800 rounded-lg w-full max-w-md overflow-hidden shadow-xl">
-      <div class="px-4 py-3 border-b border-slate-800 flex justify-between items-center bg-slate-800/50">
-        <h3 class="text-sm font-semibold text-slate-200">Firebase 設定</h3>
-        <button id="config-close-btn" class="text-slate-400 hover:text-slate-200"><i class="fa-solid fa-xmark"></i></button>
+    <div class="bg-slate-900 border border-slate-800 rounded-xl w-full max-w-md overflow-hidden shadow-2xl">
+      <div class="px-5 py-4 border-b border-slate-800 flex justify-between items-center bg-slate-800/60">
+        <h3 class="text-base font-bold text-slate-100">Firebase 設定</h3>
+        <button id="config-close-btn" class="text-slate-400 hover:text-slate-200 text-lg"><i class="fa-solid fa-xmark"></i></button>
       </div>
-      <div class="p-4 space-y-3">
+      <div class="p-5 space-y-4">
         <p class="text-xs text-slate-400 leading-relaxed">
-          貼上 Firebase 專案設定的 JSON 物件。設定後將儲存在本瀏覽器中並自動初始化。
+          貼上 Firebase 專案設定的 JSON。儲存後會保存在瀏覽器中並連線。
         </p>
         <textarea id="firebase-config-input" rows="7" placeholder='{
   "apiKey": "AIzaSy...",
@@ -227,16 +221,16 @@
   "storageBucket": "your-app.appspot.com",
   "messagingSenderId": "...",
   "appId": "..."
-}' class="w-full bg-slate-800 border border-slate-700 rounded p-2 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"></textarea>
-        <div class="flex justify-end space-x-2 pt-2 border-t border-slate-800">
-          <button id="config-clear-btn" class="px-3 py-1.5 text-xs text-red-400 hover:text-red-300">清除設定</button>
-          <button id="config-save-btn" class="bg-sky-600 hover:bg-sky-500 text-white px-4 py-1.5 rounded text-xs font-medium">套用並連線</button>
+}' class="w-full bg-slate-800 border border-slate-700 rounded-lg p-3 text-xs font-mono text-slate-200 focus:outline-none focus:border-sky-500"></textarea>
+        <div class="flex justify-end space-x-3 pt-2 border-t border-slate-800">
+          <button id="config-clear-btn" class="px-3.5 py-2 text-xs text-rose-400 hover:text-rose-300">清除設定</button>
+          <button id="config-save-btn" class="bg-sky-600 hover:bg-sky-500 text-white px-5 py-2 rounded-lg text-xs font-semibold">套用並連線</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Firebase SDK (Modular v10) -->
+  <!-- Firebase 模組化 SDK (v10) -->
   <script type="module">
     import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { 
@@ -255,7 +249,6 @@
       onSnapshot 
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    // 狀態變數
     let db = null;
     let auth = null;
     let currentUser = null;
@@ -265,7 +258,6 @@
     const LOCAL_STORAGE_KEY = 'media_tracker_items';
     const FIREBASE_CONFIG_KEY = 'media_tracker_firebase_config';
 
-    // 平台徽章配色
     const platformColors = {
       'Netflix': 'bg-red-950/70 text-red-300 border-red-800/60',
       'Prime Video': 'bg-sky-950/70 text-sky-300 border-sky-800/60',
@@ -279,7 +271,6 @@
       '其它平台': 'bg-slate-800 text-slate-300 border-slate-700'
     };
 
-    // 劇種徽章配色
     const genreColors = {
       '日劇': 'bg-rose-900/50 text-rose-300 border-rose-800/40',
       '美劇': 'bg-indigo-900/50 text-indigo-300 border-indigo-800/40',
@@ -290,7 +281,6 @@
       '書籍': 'bg-amber-900/50 text-amber-300 border-amber-800/40'
     };
 
-    // 初始化 Firebase
     function initFirebase() {
       const savedConfig = localStorage.getItem(FIREBASE_CONFIG_KEY);
       if (!savedConfig) {
@@ -305,7 +295,6 @@
         auth = getAuth(app);
         db = getFirestore(app);
 
-        // 監聽登入狀態切換
         onAuthStateChanged(auth, (user) => {
           if (user) {
             currentUser = user;
@@ -327,30 +316,26 @@
       }
     }
 
-    // 綁定當前使用者的 Firestore 即時監聽
     function bindFirestoreListener(uid) {
       if (!db || !uid) return;
       if (unsubscribeSnapshot) unsubscribeSnapshot();
 
-      // 每位使用者的資料獨立儲存在 users/{uid}/items 集合中
       const itemsCol = collection(db, 'users', uid, 'items');
       unsubscribeSnapshot = onSnapshot(itemsCol, (snapshot) => {
         const cloudItems = [];
         snapshot.forEach(docSnap => {
           cloudItems.push({ id: docSnap.id, ...docSnap.data() });
         });
-        // 依更新時間排序
         cloudItems.sort((a, b) => (b.updatedAt || 0) - (a.updatedAt || 0));
         items = cloudItems;
         saveLocalBackup(items);
         renderTable();
       }, (error) => {
-        console.error('Firestore 監聽失敗:', error);
-        setSyncStatus('權限阻擋/無法讀取', 'bg-rose-950/80 text-rose-400 border-rose-800');
+        console.error('Firestore 讀取失敗:', error);
+        setSyncStatus('存取遭拒', 'bg-rose-950/80 text-rose-400 border-rose-800');
       });
     }
 
-    // 更新使用者介面
     function updateUserUI(user) {
       const loginBtn = document.getElementById('btn-login');
       const userProfile = document.getElementById('user-profile');
@@ -371,10 +356,9 @@
     function setSyncStatus(text, badgeClass) {
       const statusEl = document.getElementById('sync-status');
       statusEl.textContent = text;
-      statusEl.className = `text-xs px-2 py-0.5 rounded-full border ${badgeClass}`;
+      statusEl.className = `text-xs px-2.5 py-1 rounded-full border ${badgeClass}`;
     }
 
-    // 本地資料回退處理
     function loadLocalData() {
       const raw = localStorage.getItem(LOCAL_STORAGE_KEY);
       items = raw ? JSON.parse(raw) : [];
@@ -385,7 +369,6 @@
       localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
     }
 
-    // 統一資料寫入／更新
     async function persistItem(item) {
       item.updatedAt = Date.now();
       if (db && currentUser) {
@@ -400,7 +383,6 @@
       }
     }
 
-    // 刪除項目
     async function removeItem(id) {
       if (!confirm('確定要刪除這筆紀錄嗎？')) return;
       if (db && currentUser) {
@@ -413,7 +395,6 @@
       }
     }
 
-    // 渲染資料表格
     function renderTable() {
       const tbody = document.getElementById('tracker-table-body');
       const emptyState = document.getElementById('empty-state');
@@ -443,65 +424,87 @@
 
       filtered.forEach(item => {
         const tr = document.createElement('tr');
-        tr.className = 'hover:bg-slate-800/40 transition border-b border-slate-800/60';
+        tr.className = 'hover:bg-slate-800/40 transition border-b border-slate-800/70';
 
         const pColor = platformColors[item.platform] || platformColors['其它平台'];
         const gColor = genreColors[item.genre] || 'bg-slate-800 text-slate-300 border-slate-700';
         
-        // 進度百分比計算
         const current = Number(item.current) || 0;
         const total = Number(item.total) || 0;
         const percent = total > 0 ? Math.min(100, Math.round((current / total) * 100)) : 0;
         const isStatusCompleted = item.status === 'COMPLETED';
 
         tr.innerHTML = `
-          <td class="py-2.5 px-3">
-            <span class="inline-block text-[11px] px-2 py-0.5 rounded border font-medium ${gColor}">
+          <!-- 分類標籤 -->
+          <td class="py-3 px-4">
+            <span class="inline-block text-xs px-2.5 py-1 rounded-md border font-semibold ${gColor}">
               ${item.genre || (item.type === 'BOOK' ? '漫畫' : '影劇')}
             </span>
           </td>
-          <td class="py-2.5 px-3">
-            <span class="inline-block text-[11px] px-2 py-0.5 rounded border ${pColor}">
+
+          <!-- 平台標籤 -->
+          <td class="py-3 px-4">
+            <span class="inline-block text-xs px-2.5 py-1 rounded-md border font-semibold ${pColor}">
               ${item.platform}
             </span>
           </td>
-          <td class="py-2.5 px-3 font-medium text-slate-100">
-            <div class="truncate max-w-[200px] sm:max-w-[280px]" title="${item.title}">${item.title}</div>
+
+          <!-- 作品名稱 -->
+          <td class="py-3 px-4">
+            <div class="truncate max-w-[210px] sm:max-w-[280px] text-base font-bold text-slate-100" title="${item.title}">
+              ${item.title}
+            </div>
           </td>
-          <td class="py-2.5 px-3">
+
+          <!-- 進度狀態與比例 (特大號數字呈現) -->
+          <td class="py-3 px-4">
             <div class="w-full">
-              <div class="flex justify-between items-center text-[11px] text-slate-400 mb-1">
-                <span>第 <b class="text-slate-200 text-xs">${current}</b> ${total > 0 ? `/ ${total}` : ''} ${item.type === 'BOOK' ? '話/卷' : '集'}</span>
-                <span>${total > 0 ? `${percent}%` : '連載中'}</span>
+              <div class="flex justify-between items-baseline mb-1.5">
+                <div class="flex items-baseline space-x-1">
+                  <span class="text-xs text-slate-400">第</span>
+                  <span class="text-[18px] font-black text-sky-400 tracking-tight leading-none">${current}</span>
+                  <span class="text-xs text-slate-400">${total > 0 ? `/ ${total}` : ''} ${item.type === 'BOOK' ? '話/卷' : '集'}</span>
+                </div>
+                <span class="text-[16px] font-black text-slate-200 tracking-tight leading-none">
+                  ${total > 0 ? `${percent}%` : '<span class="text-xs font-semibold text-slate-400">連載中</span>'}
+                </span>
               </div>
-              <div class="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-                <div class="bg-sky-500 h-1.5 rounded-full transition-all" style="width: ${total > 0 ? percent : (current > 0 ? 100 : 0)}%"></div>
+              <div class="w-full bg-slate-800 rounded-full h-2 overflow-hidden border border-slate-700/50">
+                <div class="bg-sky-500 h-2 rounded-full transition-all" style="width: ${total > 0 ? percent : (current > 0 ? 100 : 0)}%"></div>
               </div>
             </div>
           </td>
-          <td class="py-2.5 px-3 text-center">
-            <button class="status-toggle text-[11px] px-2.5 py-1 rounded-full font-medium transition border ${
+
+          <!-- 單集狀態切換按鈕 -->
+          <td class="py-3 px-4 text-center">
+            <button class="status-toggle text-xs px-3.5 py-1.5 rounded-full font-bold transition border ${
               isStatusCompleted 
-                ? 'bg-emerald-950/60 text-emerald-400 border-emerald-800 hover:bg-emerald-900/60' 
-                : 'bg-amber-950/60 text-amber-400 border-amber-800 hover:bg-amber-900/60'
+                ? 'bg-emerald-950/70 text-emerald-300 border-emerald-700 hover:bg-emerald-900/80 shadow-sm' 
+                : 'bg-amber-950/70 text-amber-300 border-amber-700 hover:bg-amber-900/80 shadow-sm'
             }" data-id="${item.id}">
-              <i class="fa-solid ${isStatusCompleted ? 'fa-check-circle' : 'fa-play'} mr-1"></i>${isStatusCompleted ? '已看完' : '進行中'}
+              <i class="fa-solid ${isStatusCompleted ? 'fa-circle-check' : 'fa-circle-play'} mr-1.5"></i>${isStatusCompleted ? '已看完' : '進行中'}
             </button>
           </td>
-          <td class="py-2.5 px-3 text-center">
-            <div class="inline-flex items-center rounded border border-slate-700 bg-slate-800">
-              <button class="step-btn px-2 py-1 text-slate-300 hover:text-white hover:bg-slate-700 rounded-l" data-id="${item.id}" data-action="dec">
-                <i class="fa-solid fa-minus text-[10px]"></i>
+
+          <!-- 加大觸控快捷調整步進盒 (40px 按鈕、48px 數值展示) -->
+          <td class="py-3 px-4 text-center">
+            <div class="inline-flex items-center rounded-lg border border-slate-700 bg-slate-800 shadow-sm overflow-hidden">
+              <button class="step-btn w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 active:bg-slate-600 transition" data-id="${item.id}" data-action="dec" title="減 1 集">
+                <i class="fa-solid fa-minus text-sm"></i>
               </button>
-              <span class="px-2 py-1 text-[11px] font-mono text-slate-200 min-w-[28px]">${current}</span>
-              <button class="step-btn px-2 py-1 text-slate-300 hover:text-white hover:bg-slate-700 rounded-r" data-id="${item.id}" data-action="inc">
-                <i class="fa-solid fa-plus text-[10px]"></i>
+              <span class="w-12 h-10 flex items-center justify-center text-base font-black font-mono text-slate-100 bg-slate-900/70 border-x border-slate-700 select-none">
+                ${current}
+              </span>
+              <button class="step-btn w-10 h-10 flex items-center justify-center text-slate-300 hover:text-white hover:bg-slate-700 active:bg-slate-600 transition" data-id="${item.id}" data-action="inc" title="加 1 集">
+                <i class="fa-solid fa-plus text-sm"></i>
               </button>
             </div>
           </td>
-          <td class="py-2.5 px-3 text-right">
-            <button class="edit-btn text-slate-400 hover:text-sky-400 p-1 mx-0.5" data-id="${item.id}" title="編輯"><i class="fa-regular fa-pen-to-square"></i></button>
-            <button class="delete-btn text-slate-400 hover:text-rose-400 p-1 mx-0.5" data-id="${item.id}" title="刪除"><i class="fa-regular fa-trash-can"></i></button>
+
+          <!-- 操作按鈕 -->
+          <td class="py-3 px-4 text-right">
+            <button class="edit-btn text-slate-400 hover:text-sky-400 p-2 rounded transition" data-id="${item.id}" title="編輯"><i class="fa-regular fa-pen-to-square text-base"></i></button>
+            <button class="delete-btn text-slate-400 hover:text-rose-400 p-2 rounded transition" data-id="${item.id}" title="刪除"><i class="fa-regular fa-trash-can text-base"></i></button>
           </td>
         `;
 
@@ -511,9 +514,7 @@
       attachRowEvents();
     }
 
-    // 綁定橫列表格內的快捷按鈕事件
     function attachRowEvents() {
-      // 狀態切換
       document.querySelectorAll('.status-toggle').forEach(btn => {
         btn.onclick = () => {
           const id = btn.getAttribute('data-id');
@@ -525,7 +526,6 @@
         };
       });
 
-      // 步進按鈕 (+1 / -1)
       document.querySelectorAll('.step-btn').forEach(btn => {
         btn.onclick = () => {
           const id = btn.getAttribute('data-id');
@@ -541,7 +541,6 @@
         };
       });
 
-      // 編輯按鈕
       document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.onclick = () => {
           const id = btn.getAttribute('data-id');
@@ -550,7 +549,6 @@
         };
       });
 
-      // 刪除按鈕
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = () => {
           const id = btn.getAttribute('data-id');
@@ -559,7 +557,6 @@
       });
     }
 
-    // 編輯與新增 Modal 操控
     const itemModal = document.getElementById('item-modal');
     const formType = document.getElementById('form-type');
     const formGenre = document.getElementById('form-genre');
@@ -640,7 +637,6 @@
       closeItemModal();
     };
 
-    // Firebase Config Modal 操控
     const configModal = document.getElementById('config-modal');
     document.getElementById('btn-config').onclick = () => {
       const saved = localStorage.getItem(FIREBASE_CONFIG_KEY);
@@ -665,7 +661,6 @@
       }
     };
 
-    // Google 登入與登出
     document.getElementById('btn-login').onclick = async () => {
       if (!auth) {
         alert('請先點擊「設定」填入 Firebase 專案設定 JSON。');
@@ -686,13 +681,11 @@
       }
     };
 
-    // 篩選與搜尋監聽
     document.getElementById('filter-type').onchange = renderTable;
     document.getElementById('filter-genre').onchange = renderTable;
     document.getElementById('filter-platform').onchange = renderTable;
     document.getElementById('search-input').oninput = renderTable;
 
-    // 頁面啟動
     initFirebase();
   </script>
 </body>
